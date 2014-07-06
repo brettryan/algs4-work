@@ -54,7 +54,7 @@ public final class AppUnionFind {
             int p, q;
             String[] pq;
             String ct = r.readLine();
-            uf = new MyUnionFind();
+            uf = new SolutionQuickFindUnionFind(Integer.parseInt(ct));
             while ((line = r.readLine()) != null) {
                 pq = line.split("\\s+");
                 p = Integer.parseInt(pq[0]);
@@ -81,6 +81,75 @@ public final class AppUnionFind {
         int find(int p);
 
         boolean connected(int p, int q);
+
+    }
+
+
+    /**
+     * Base class for solutions derived from book.
+     *
+     * Solutions are derived based on hints given throughout the book text.
+     */
+    private static abstract class SolutionUnionFind implements UnionFind {
+
+        protected int[] id;
+        protected int count;
+
+        public SolutionUnionFind(int size) {
+            id = new int[size];
+            for (int i = 0; i < size; i++) {
+                id[i] = i;
+            }
+            count = size;
+        }
+
+        @Override
+        public abstract void union(int p, int q);
+
+        @Override
+        public int count() {
+            return count;
+        }
+
+        @Override
+        public abstract int find(int p);
+
+        @Override
+        public boolean connected(int p, int q) {
+            return find(p) == find(q);
+        }
+
+    }
+
+
+    /**
+     * Quick find union find solution.
+     */
+    private static final class SolutionQuickFindUnionFind extends SolutionUnionFind {
+
+        public SolutionQuickFindUnionFind(int size) {
+            super(size);
+        }
+
+        @Override
+        public void union(int p, int q) {
+            int pid = find(p);
+            int qid = find(q);
+            if (pid == qid) {
+                return;
+            }
+            for (int i = 0; i < id.length; i++) {
+                if (id[i] == pid) {
+                    id[i] = qid;
+                }
+            }
+            count--;
+        }
+
+        @Override
+        public int find(int p) {
+            return id[p];
+        }
 
     }
 
