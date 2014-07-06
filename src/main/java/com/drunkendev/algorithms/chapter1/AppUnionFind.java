@@ -54,7 +54,7 @@ public final class AppUnionFind {
             int p, q;
             String[] pq;
             String ct = r.readLine();
-            uf = new SolutionQuickFindUnionFind(Integer.parseInt(ct));
+            uf = new SolutionQuickUnionFind(Integer.parseInt(ct));
             while ((line = r.readLine()) != null) {
                 pq = line.split("\\s+");
                 p = Integer.parseInt(pq[0]);
@@ -258,6 +258,47 @@ public final class AppUnionFind {
                 }
             }
             return false;
+        }
+
+    }
+
+
+    private static final class SolutionQuickUnionFind extends SolutionUnionFind {
+
+        public SolutionQuickUnionFind(int size) {
+            super(size);
+        }
+
+        @Override
+        public void union(int p, int q) {
+            int i = find(p);
+            int j = find(q);
+            if (i == j) {
+                return;
+            }
+            id[i] = j;
+            count--;
+        }
+
+        /**
+         * Find location for <c>p</c>.
+         *
+         * Original solution used a while loop, when I implemented I used a recursive find.
+         *
+         * <pre><code>
+         * while (p != id[p]) {
+         *     p = id[p];
+         * }
+         * return p;
+         * </code></pre>
+         *
+         * @param   p
+         * @return  Location for p.
+         */
+        @Override
+        public int find(int p) {
+            int n = id[p];
+            return n == p ? n : find(n);
         }
 
     }
