@@ -19,6 +19,7 @@
 
 package com.drunkendev.algorithms.chapter1;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,21 +46,23 @@ public final class AppUnionFind {
 
     public static void main(String[] args) throws IOException {
         UnionFind uf = new UnionFind();
-        uf.union(4, 3);
-        uf.union(3, 8);
-        uf.union(6, 5);
-        uf.union(9, 4);
-        uf.union(2, 1);
-        uf.union(8, 9);
-        uf.union(5, 0);
-        uf.union(7, 2);
-        uf.union(6, 1);
-        uf.union(1, 0);
-        uf.union(6, 7);
+//        String fn = "tinyUF.txt";
+//        String fn = "mediumUF.txt";
+        String fn = "largeUF.txt";
+        try (BufferedReader r = App.dataReader(fn)) {
+            String line;
+            int p, q;
+            String[] pq;
+            String ct = r.readLine();
+            while ((line = r.readLine()) != null) {
+                pq = line.split("\\s+");
+                uf.union(Integer.parseInt(pq[0]), Integer.parseInt(pq[1]));
+            }
+        }
         System.out.println(uf.count() + " components.");
 
-        System.out.println(uf.connected(6, 4));
-        System.out.println(uf.connected(3, 9));
+//        System.out.println(uf.connected(6, 4));
+//        System.out.println(uf.connected(3, 9));
     }
 
 
@@ -126,7 +129,7 @@ public final class AppUnionFind {
                 set.add(q);
             } else if (setX != null && setY != null) {
                 if (setX == setY) {
-                    System.out.format("(%d, %d) ***\n", p, q);
+//                    System.out.format("(%d, %d) ***\n", p, q);
                     return;
                 } else {
                     setX.addAll(setY);
@@ -137,7 +140,7 @@ public final class AppUnionFind {
             } else if (setY != null) {
                 setY.add(p);
             }
-            System.out.format("(%d, %d)\n", p, q);
+//            System.out.format("(%d, %d)\n", p, q);
         }
 
         public int count() {
