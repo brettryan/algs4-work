@@ -54,14 +54,18 @@ public final class AppUnionFind {
             int p, q;
             String[] pq;
             String ct = r.readLine();
-            uf = new SolutionQuickUnionFind(Integer.parseInt(ct));
+            uf = new SolutionWeightedQuickUnion(Integer.parseInt(ct));
+            int i = 0;
             while ((line = r.readLine()) != null) {
+                if (i++ % 10000 == 0) {
+                    System.out.println(i);
+                }
                 pq = line.split("\\s+");
                 p = Integer.parseInt(pq[0]);
                 q = Integer.parseInt(pq[1]);
                 if (!uf.connected(p, q)) {
                     uf.union(p, q);
-                    System.out.format("%d %d\n", p, q);
+//                    System.out.format("%d %d\n", p, q);
                 }
             }
         }
@@ -263,7 +267,7 @@ public final class AppUnionFind {
     }
 
 
-    private static final class SolutionQuickUnionFind extends SolutionUnionFind {
+    private static class SolutionQuickUnionFind extends SolutionUnionFind {
 
         public SolutionQuickUnionFind(int size) {
             super(size);
@@ -297,8 +301,45 @@ public final class AppUnionFind {
          */
         @Override
         public int find(int p) {
-            int n = id[p];
-            return n == p ? n : find(n);
+//            int n = id[p];
+//            return n == p ? n : find(n);
+            // Turns out the while is faster.
+            while (p != id[p]) {
+                p = id[p];
+            }
+            return p;
+        }
+
+    }
+
+
+    private static final class SolutionWeightedQuickUnion extends SolutionQuickUnionFind {
+
+        private final int[] sizes;
+
+        public SolutionWeightedQuickUnion(int size) {
+            super(size);
+            sizes = new int[size];
+            for (int i = 0; i < size; i++) {
+                sizes[i] = 1;
+            }
+        }
+
+        @Override
+        public void union(int p, int q) {
+            int i = find(p);
+            int j = find(q);
+            if (i == j) {
+                return;
+            }
+            if (sizes[i] < sizes[j]) {
+                id[i] = j;
+                sizes[j] = sizes[i];
+            } else {
+                id[j] = i;
+                sizes[i] = sizes[j];
+            }
+            count--;
         }
 
     }
