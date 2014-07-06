@@ -45,18 +45,24 @@ import java.util.Set;
 public final class AppUnionFind {
 
     public static void main(String[] args) throws IOException {
-        UnionFind uf = new UnionFind();
-//        String fn = "tinyUF.txt";
+        String fn = "tinyUF.txt";
 //        String fn = "mediumUF.txt";
-        String fn = "largeUF.txt";
+//        String fn = "largeUF.txt";
+        UnionFind uf;
         try (BufferedReader r = App.dataReader(fn)) {
             String line;
             int p, q;
             String[] pq;
             String ct = r.readLine();
+            uf = new MyUnionFind();
             while ((line = r.readLine()) != null) {
                 pq = line.split("\\s+");
-                uf.union(Integer.parseInt(pq[0]), Integer.parseInt(pq[1]));
+                p = Integer.parseInt(pq[0]);
+                q = Integer.parseInt(pq[1]);
+                if (!uf.connected(p, q)) {
+                    uf.union(p, q);
+                    System.out.format("%d %d\n", p, q);
+                }
             }
         }
         System.out.println(uf.count() + " components.");
@@ -66,17 +72,30 @@ public final class AppUnionFind {
     }
 
 
+    private static interface UnionFind {
+
+        void union(int p, int q);
+
+        int count();
+
+        int find(int p);
+
+        boolean connected(int p, int q);
+
+    }
+
+
     /**
      * Data structure that satisfies requirements of union-find problem.
      */
-    private static final class UnionFind {
+    private static final class MyUnionFind implements UnionFind {
 
         private final ArrayList<Set<Integer>> sets;
 
         /**
-         * Create a new empty {@link UnionFind} instance.
+         * Create a new empty {@link MyUnionFind} instance.
          */
-        public UnionFind() {
+        public MyUnionFind() {
             this.sets = new ArrayList<>();
         }
 
@@ -105,6 +124,7 @@ public final class AppUnionFind {
          * @param   q
          *          Second point.
          */
+        @Override
         public void union(int p, int q) {
             Set<Integer> setX = null;
             Set<Integer> setY = null;
@@ -143,10 +163,12 @@ public final class AppUnionFind {
 //            System.out.format("(%d, %d)\n", p, q);
         }
 
+        @Override
         public int count() {
             return sets.size();
         }
 
+        @Override
         public int find(int p) {
             for (int i = 0; i < sets.size(); i++) {
                 Set<Integer> set = sets.get(i);
@@ -157,6 +179,7 @@ public final class AppUnionFind {
             return -1;
         }
 
+        @Override
         public boolean connected(int p, int q) {
             for (Set<Integer> set : sets) {
                 if (set.contains(p) && set.contains(q)) {
