@@ -30,7 +30,56 @@
       <artifactId>stdlib-package</artifactId>
       <version>1.0</version>
     </dependency>
+
+    <!-- In order to use this, download algs4-data.zip and install it to local maven:
+         mvn install:install-file -Dfile=algs4-data.zip \
+           -DgroupId=edu.princeton.cs.introcs -DartifactId=algs4-data \
+           -Dversion=1.0 -Dpackaging=zip \
+           -Dclassifier=resources
+           Beware, this is a 340Mb file.
+    -->
+    <dependency>
+      <groupId>edu.princeton.cs.introcs</groupId>
+      <artifactId>algs4-data</artifactId>
+      <version>1.0</version>
+      <classifier>resources</classifier>
+      <type>zip</type>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <!-- In order to use this, download algs4-data.zip and install it to local maven:
+             mvn install:install-file -Dfile=algs4-data.zip \
+               -DgroupId=edu.princeton.cs.introcs -DartifactId=algs4-data \
+               -Dversion=1.0 -Dpackaging=zip \
+               -Dclassifier=resources
+               Beware, this is a 340Mb file.
+        -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-cfg-test-resources</id>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <phase>generate-test-resources</phase>
+            <configuration>
+              <outputDirectory>${project.build.directory}/test-resources</outputDirectory>
+              <includeClassifiers>resources</includeClassifiers>
+              <includeArtifacIds>algs4-data</includeArtifacIds>
+              <excludeTransitive>true</excludeTransitive>
+              <includeTypes>zip</includeTypes>
+              <scope>test</scope>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <repositories>
     <repository>

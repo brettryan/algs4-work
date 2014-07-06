@@ -19,6 +19,7 @@
 
 package com.drunkendev.algorithms.chapter1;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,7 +43,7 @@ import java.util.Set;
  */
 public final class AppUnionFind {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         UnionFind uf = new UnionFind();
         uf.union(4, 3);
         uf.union(3, 8);
