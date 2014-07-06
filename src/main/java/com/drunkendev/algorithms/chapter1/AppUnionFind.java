@@ -44,21 +44,21 @@ public final class AppUnionFind {
 
     public static void main(String[] args) {
         UnionFind uf = new UnionFind();
-        uf.addAndPrint(4, 3);
-        uf.addAndPrint(3, 8);
-        uf.addAndPrint(6, 5);
-        uf.addAndPrint(9, 4);
-        uf.addAndPrint(2, 1);
-        uf.addAndPrint(8, 9);
-        uf.addAndPrint(5, 0);
-        uf.addAndPrint(7, 2);
-        uf.addAndPrint(6, 1);
-        uf.addAndPrint(1, 0);
-        uf.addAndPrint(6, 7);
-        System.out.println(uf.getComponents() + " components.");
+        uf.union(4, 3);
+        uf.union(3, 8);
+        uf.union(6, 5);
+        uf.union(9, 4);
+        uf.union(2, 1);
+        uf.union(8, 9);
+        uf.union(5, 0);
+        uf.union(7, 2);
+        uf.union(6, 1);
+        uf.union(1, 0);
+        uf.union(6, 7);
+        System.out.println(uf.count() + " components.");
 
-        System.out.println(uf.isConnected(6, 4));
-        System.out.println(uf.isConnected(3, 9));
+        System.out.println(uf.connected(6, 4));
+        System.out.println(uf.connected(3, 9));
     }
 
 
@@ -91,26 +91,26 @@ public final class AppUnionFind {
          *
          * <ul>
          *  <li>If a new relationship is created then this will be printed as
-         *      <code>(x, y)</code>.</li>
+         *      <code>(p, q)</code>.</li>
          *  <li>If a relationship already exists it will be printed as
-         *      <code>(x, y) ***</code>.</li>
+         *      <code>(p, q) ***</code>.</li>
          * </ul>
          *
-         * @param   x
+         * @param   p
          *          First point.
-         * @param   y
+         * @param   q
          *          Second point.
          */
-        public void addAndPrint(int x, int y) {
+        public void union(int p, int q) {
             Set<Integer> setX = null;
             Set<Integer> setY = null;
             int setYi = -1;
             for (int i = 0; i < sets.size(); i++) {
                 Set<Integer> set = sets.get(i);
-                if (set.contains(x)) {
+                if (set.contains(p)) {
                     setX = set;
                 }
-                if (set.contains(y)) {
+                if (set.contains(q)) {
                     setY = set;
                     setYi = i;
                 }
@@ -121,33 +121,43 @@ public final class AppUnionFind {
             if (setX == null && setY == null) {
                 Set<Integer> set = new HashSet<>();
                 sets.add(set);
-                set.add(x);
-                set.add(y);
+                set.add(p);
+                set.add(q);
             } else if (setX != null && setY != null) {
                 if (setX == setY) {
-                    System.out.format("(%d, %d) ***\n", x, y);
+                    System.out.format("(%d, %d) ***\n", p, q);
                     return;
                 } else {
                     setX.addAll(setY);
                     sets.remove(setYi);
                 }
             } else if (setX != null) {
-                setX.add(y);
+                setX.add(q);
             } else if (setY != null) {
-                setY.add(x);
+                setY.add(p);
             }
-            System.out.format("(%d, %d)\n", x, y);
+            System.out.format("(%d, %d)\n", p, q);
         }
 
-        public int getComponents() {
+        public int count() {
             return sets.size();
         }
 
-        public boolean isConnected(int x, int y) {
+        public int find(int p) {
+            for (int i = 0; i < sets.size(); i++) {
+                Set<Integer> set = sets.get(i);
+                if (set.contains(p)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        public boolean connected(int p, int q) {
             for (Set<Integer> set : sets) {
-                if (set.contains(x) && set.contains(y)) {
+                if (set.contains(p) && set.contains(q)) {
                     return true;
-                } else if (set.contains(x) || set.contains(y)) {
+                } else if (set.contains(p) || set.contains(q)) {
                     return false;
                 }
             }
