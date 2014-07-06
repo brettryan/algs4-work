@@ -1,0 +1,6 @@
+target/
+*~
+*.bak
+*.swp
+.DS_Store
+pom.xml.versionsBackup
