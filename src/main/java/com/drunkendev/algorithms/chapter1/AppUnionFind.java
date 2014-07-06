@@ -40,13 +40,7 @@ import java.util.Set;
  *
  * @author  Brett Ryan
  */
-public class AppUnionFind {
-
-    /**
-     * Creates a new {@code AppUnionFind} instance.
-     */
-    public AppUnionFind() {
-    }
+public final class AppUnionFind {
 
     public static void main(String[] args) {
         UnionFind uf = new UnionFind();
@@ -62,20 +56,51 @@ public class AppUnionFind {
         uf.addAndPrint(1, 0);
         uf.addAndPrint(6, 7);
         System.out.println(uf.getComponents() + " components.");
+
+        System.out.println(uf.isConnected(6, 4));
+        System.out.println(uf.isConnected(3, 9));
     }
 
 
     /**
-     *
+     * Data structure that satisfies requirements of union-find problem.
      */
     private static final class UnionFind {
 
         private final ArrayList<Set<Integer>> sets;
 
+        /**
+         * Create a new empty {@link UnionFind} instance.
+         */
         public UnionFind() {
             this.sets = new ArrayList<>();
         }
 
+        /**
+         * Add two connected points to the data structure.
+         *
+         * <ul>
+         *  <li>If both points exist they nothing occurs.</li>
+         *  <li>If no points exist a new set is added containing both points.</li>
+         *  <li>If a set contains one point and another set contains the other,
+         *      both sets will be merged.</li>
+         *  <li>If a set contains one point the other will be added to that set.</li>
+         * </ul>
+         *
+         * This function will print output:
+         *
+         * <ul>
+         *  <li>If a new relationship is created then this will be printed as
+         *      <code>(x, y)</code>.</li>
+         *  <li>If a relationship already exists it will be printed as
+         *      <code>(x, y) ***</code>.</li>
+         * </ul>
+         *
+         * @param   x
+         *          First point.
+         * @param   y
+         *          Second point.
+         */
         public void addAndPrint(int x, int y) {
             Set<Integer> setX = null;
             Set<Integer> setY = null;
