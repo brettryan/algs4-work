@@ -174,7 +174,6 @@ public class AppSorting {
             }
 
             while (h >= 1) {
-                // h-sort the array
                 for (int i = h; i < arr.length; i++) {
                     ac++;
                     for (int j = i; j >= h; j -= h) {
