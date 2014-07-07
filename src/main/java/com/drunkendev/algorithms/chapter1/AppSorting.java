@@ -19,6 +19,14 @@
 
 package com.drunkendev.algorithms.chapter1;
 
+import edu.princeton.cs.algs4.Stopwatch;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+
 
 /**
  *
@@ -26,14 +34,41 @@ package com.drunkendev.algorithms.chapter1;
  */
 public class AppSorting {
 
-    public static void main(String[] args) {
+    private static int ex;
 
+    static {
+        ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(true);
     }
 
-    private static void sort(Comparable[] x) {
-
+    public static void main(String[] args) throws IOException {
+        String[] a = load("tiny.txt");
+        new ShellSort().sort(a);
+        // Assert not working for NB run-file.
+        System.out.println("Exchange: " + ex);
+        if (!isSorted(a)) {
+            throw new AssertionError("Array is not sorted");
+        }
+        show(a);
+        ex = 0;
+        new ShellSort().sort(a);
+        System.out.println("Exchange: " + ex);
     }
 
+    private static String[] load(String fn) throws IOException {
+//        In.readStrings();
+        List<String> strings = new ArrayList<>();
+        try (BufferedReader r = App.dataReader(fn)) {
+            String line;
+            while ((line = r.readLine()) != null) {
+                strings.addAll(Arrays.asList(WHITESPACE_PATTERN.split(line)));
+            }
+        }
+        return strings.toArray(new String[strings.size()]);
+    }
+
+//    private static void sort(Comparable[] x, Sorter sorter) {
+//        sorter.sort(x);
+//    }
     private static boolean less(Comparable x, Comparable y) {
         return x.compareTo(y) < 0;
     }
@@ -42,6 +77,7 @@ public class AppSorting {
         Comparable temp = a[idx1];
         a[idx1] = a[idx2];
         a[idx2] = temp;
+        ex++;
     }
 
     private static void show(Comparable[] a) {
@@ -49,6 +85,111 @@ public class AppSorting {
             System.out.print(c + " ");
         }
         System.out.println();
+    }
+
+    private static boolean isSorted(Comparable[] a) {
+        for (int i = 1; i < a.length; i++) {
+            if (less(a[i], a[i - 1])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static final Pattern WHITESPACE_PATTERN
+            = Pattern.compile("\\p{javaWhitespace}+");
+
+
+    private static abstract class Sorter {
+
+        protected int ac;
+
+        public void sort(Comparable[] x) {
+            Stopwatch sw = new Stopwatch();
+            sortImpl(x);
+            System.out.println("Sort time: " + sw.elapsedTime());
+            System.out.println("Accesses: " + ac);
+        }
+
+        abstract void sortImpl(Comparable[] x);
+
+    }
+
+
+    private static final class SelectionSort extends Sorter {
+
+        @Override
+        public void sortImpl(Comparable[] arr) {
+            int idx;
+            for (int i = 0; i < arr.length; i++) {
+                ac++;
+                idx = i;
+                for (int j = i + 1; j < arr.length; j++) {
+                    ac++;
+                    if (less(arr[j], arr[idx])) {
+                        idx = j;
+                    }
+                }
+                exch(arr, i, idx);
+            }
+        }
+
+    }
+
+
+    private static final class InsertionSort extends Sorter {
+
+        @Override
+        public void sortImpl(Comparable[] arr) {
+            for (int i = 1; i < arr.length; i++) {
+                ac++;
+                for (int j = i; j > 0; j--) {
+                    ac++;
+                    if (less(arr[j], arr[j - 1])) {
+                        exch(arr, j, j - 1);
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+
+    }
+
+
+    private static final class ShellSort extends Sorter {
+
+        private final InsertionSort is;
+
+        public ShellSort() {
+            this.is = new InsertionSort();
+        }
+
+        @Override
+        void sortImpl(Comparable[] arr) {
+            int h = 1;
+            int max = arr.length / 3;
+            while (h < max) {
+                h = 3 * h + 1;
+            }
+
+            while (h >= 1) {
+                // h-sort the array
+                for (int i = h; i < arr.length; i++) {
+                    ac++;
+                    for (int j = i; j >= h; j -= h) {
+                        ac++;
+                        if (less(arr[j], arr[j - h])) {
+                            exch(arr, j, j - h);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                h /= 3;
+            }
+        }
+
     }
 
 }
