@@ -44,10 +44,28 @@ import java.util.Set;
  */
 public final class AppUnionFind {
 
+    private static void ex151() {
+        //9-0 3-4 5-8 7-2 2-1 5-7 0-3 4-2
+        SolutionUnionFind qf = new SolutionWeightedQuickUnion(10);
+        qf.union(9, 0);
+        qf.union(3, 4);
+        qf.union(5, 8);
+        qf.union(7, 2);
+        qf.union(2, 1);
+        qf.union(5, 7);
+        qf.union(0, 3);
+        qf.union(4, 2);
+        System.out.println(qf.getArrAccess());
+    }
+
     public static void main(String[] args) throws IOException {
-        String fn = "tinyUF.txt";
-//        String fn = "mediumUF.txt";
-//        String fn = "largeUF.txt";
+//        loadFile("tinyUF.txt");
+//        loadFile("mediumUF.txt");
+//        loadFile("largeUF.txt");
+        ex151();
+    }
+
+    private static void loadFile(String fn) throws IOException {
         UnionFind uf;
         try (BufferedReader r = App.dataReader(fn)) {
             String line;
@@ -98,6 +116,7 @@ public final class AppUnionFind {
 
         protected int[] id;
         protected int count;
+        protected int arrAccess;
 
         public SolutionUnionFind(int size) {
             id = new int[size];
@@ -123,6 +142,10 @@ public final class AppUnionFind {
             return find(p) == find(q);
         }
 
+        public int getArrAccess() {
+            return arrAccess;
+        }
+
     }
 
 
@@ -143,6 +166,7 @@ public final class AppUnionFind {
                 return;
             }
             for (int i = 0; i < id.length; i++) {
+                arrAccess++;
                 if (id[i] == pid) {
                     id[i] = qid;
                 }
@@ -280,6 +304,7 @@ public final class AppUnionFind {
             if (i == j) {
                 return;
             }
+            arrAccess++;
             id[i] = j;
             count--;
         }
@@ -305,6 +330,7 @@ public final class AppUnionFind {
 //            return n == p ? n : find(n);
             // Turns out the while is faster.
             while (p != id[p]) {
+                arrAccess++;
                 p = id[p];
             }
             return p;
@@ -332,6 +358,7 @@ public final class AppUnionFind {
             if (i == j) {
                 return;
             }
+            arrAccess++;
             if (sizes[i] < sizes[j]) {
                 id[i] = j;
                 sizes[j] = sizes[i];
