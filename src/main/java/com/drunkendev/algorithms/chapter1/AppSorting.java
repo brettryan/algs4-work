@@ -42,15 +42,15 @@ public class AppSorting {
 
     public static void main(String[] args) throws IOException {
         String[] a = load("tiny.txt");
-        new ShellSort().sort(a);
+        new MergeSort().sort(a);
         // Assert not working for NB run-file.
         System.out.println("Exchange: " + ex);
+        show(a);
         if (!isSorted(a)) {
             throw new AssertionError("Array is not sorted");
         }
-        show(a);
         ex = 0;
-        new ShellSort().sort(a);
+        new MergeSort().sort(a);
         System.out.println("Exchange: " + ex);
     }
 
@@ -186,6 +186,52 @@ public class AppSorting {
                     }
                 }
                 h /= 3;
+            }
+        }
+
+    }
+
+
+    private static final class MergeSort extends Sorter {
+
+        @Override
+        public void sortImpl(Comparable[] arr) {
+            Comparable[] temp = new Comparable[arr.length];
+            divideAndSort(arr, 0, arr.length - 1, temp);
+        }
+
+        private void divideAndSort(Comparable[] arr, int from, int to, Comparable[] temp) {
+            ac++;
+            if (from >= to) {
+                return;
+            }
+            int mid = from + ((to - from) / 2);
+            divideAndSort(arr, from, mid, temp);
+            divideAndSort(arr, mid + 1, to, temp);
+            merge(arr, from, mid, to, temp);
+        }
+
+        private void merge(Comparable[] arr, int from, int mid, int to, Comparable[] temp) {
+            for (int k = from; k <= to; k++) {
+                temp[k] = arr[k];
+            }
+
+            int leftIdx = from;
+            int rightIdx = mid + 1;
+            for (int k = from; k <= to; k++) {
+                ac++;
+                Comparable val;
+
+                if (leftIdx > mid) {
+                    val = temp[rightIdx++];
+                } else if (rightIdx > to) {
+                    val = temp[leftIdx++];
+                } else if (less(temp[rightIdx], temp[leftIdx])) {
+                    val = temp[rightIdx++];
+                } else {
+                    val = temp[leftIdx++];
+                }
+                arr[k] = val;
             }
         }
 
