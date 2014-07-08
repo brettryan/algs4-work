@@ -42,7 +42,7 @@ public class AppSorting {
 
     public static void main(String[] args) throws IOException {
         String[] a = load("tiny.txt");
-        new BottomUpMergeSort().sort(a);
+        new QuickSort().sort(a);
         // Assert not working for NB run-file.
         System.out.println("Exchange: " + ex);
         show(a);
@@ -50,7 +50,7 @@ public class AppSorting {
             throw new AssertionError("Array is not sorted");
         }
         ex = 0;
-        new BottomUpMergeSort().sort(a);
+        new QuickSort().sort(a);
         System.out.println("Exchange: " + ex);
     }
 
@@ -270,6 +270,74 @@ public class AppSorting {
                           temp);
                 }
             }
+        }
+
+    }
+
+
+    private static final class QuickSort extends Sorter {
+
+        @Override
+        public void sortImpl(Comparable[] arr) {
+            sort(arr, 0, arr.length - 1);
+        }
+
+        private void sort(Comparable[] arr, int startI, int endI) {
+            if (endI <= startI) {
+                return;
+            }
+            int psize = partition(arr, startI, endI);
+//            int psize =
+            sort(arr, startI, psize - 1);
+            sort(arr, psize + 1, endI);
+        }
+
+        private int partition(Comparable[] arr, int startI, int endI) {
+            Comparable v = arr[startI];
+            int i = startI;
+            int j = endI + 1;
+
+            while (true) {
+                while (less(arr[++i], v)) {
+                    if (i == endI) {
+                        break;
+                    }
+                }
+
+                while (less(v, arr[--j])) {
+                    if (j == startI) {
+                        break;
+                    }
+                }
+
+                if (i >= j) {
+                    break;
+                }
+
+                exch(arr, i, j);
+            }
+            exch(arr, startI, j);
+            return j;
+
+//            int leftIdx = -1;
+//            int rightIdx = -1;
+//            int j;
+//            for (j = startI; j < endI; j++) {
+//                if (!less(arr[j], arr[startI])) {
+//                    leftIdx = j;
+//                    break;
+//                }
+//            }
+//            for (j = arr.length - 1; j >= 0; j--) {
+//                if (less(arr[j], arr[startI])) {
+//                    rightIdx = j;
+//                    break;
+//                }
+//            }
+//            if (leftIdx >= 0 && rightIdx >= 0) {
+//                exch(arr, leftIdx, rightIdx);
+//            }
+//            return j;
         }
 
     }
