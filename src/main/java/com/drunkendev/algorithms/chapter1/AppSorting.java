@@ -42,7 +42,7 @@ public class AppSorting {
 
     public static void main(String[] args) throws IOException {
         String[] a = load("tiny.txt");
-        new MergeSort().sort(a);
+        new BottomUpMergeSort().sort(a);
         // Assert not working for NB run-file.
         System.out.println("Exchange: " + ex);
         show(a);
@@ -50,7 +50,7 @@ public class AppSorting {
             throw new AssertionError("Array is not sorted");
         }
         ex = 0;
-        new MergeSort().sort(a);
+        new BottomUpMergeSort().sort(a);
         System.out.println("Exchange: " + ex);
     }
 
@@ -192,7 +192,7 @@ public class AppSorting {
     }
 
 
-    private static final class MergeSort extends Sorter {
+    private static class MergeSort extends Sorter {
 
         @Override
         public void sortImpl(Comparable[] arr) {
@@ -200,7 +200,7 @@ public class AppSorting {
             divideAndSort(arr, 0, arr.length - 1, temp);
         }
 
-        private void divideAndSort(Comparable[] arr, int from, int to, Comparable[] temp) {
+        protected void divideAndSort(Comparable[] arr, int from, int to, Comparable[] temp) {
             ac++;
             if (from >= to) {
                 return;
@@ -211,7 +211,7 @@ public class AppSorting {
             merge(arr, from, mid, to, temp);
         }
 
-        private void merge(Comparable[] arr, int from, int mid, int to, Comparable[] temp) {
+        protected void merge(Comparable[] arr, int from, int mid, int to, Comparable[] temp) {
             for (int k = from; k <= to; k++) {
                 temp[k] = arr[k];
             }
@@ -237,4 +237,64 @@ public class AppSorting {
 
     }
 
+
+    private static final class TopDownMergeSort extends MergeSort {
+
+        @Override
+        protected void divideAndSort(Comparable[] arr, int from, int to, Comparable[] temp) {
+            if (from >= to) {
+                return;
+            }
+            int mid = from + (to - from) / 2;
+            divideAndSort(arr, from, mid, temp);
+            divideAndSort(arr, mid + 1, to, temp);
+            merge(arr, from, mid, to, temp);
+        }
+
+    }
+
+
+    private static final class BottomUpMergeSort extends MergeSort {
+
+        @Override
+        public void sortImpl(Comparable[] arr) {
+            Comparable[] temp = new Comparable[arr.length];
+            for (int size = 1; size < arr.length; size *= 2) {
+                ac++;
+                for (int lo = 0; lo < arr.length; lo += size * 2) {
+                    ac++;
+                    merge(arr,
+                          lo,
+                          lo + size - 1,
+                          Math.min(lo + size + size - 1, arr.length - 1),
+                          temp);
+                }
+            }
+        }
+
+    }
+
+//    private static final class MyMergeSort extends MergeSort {
+//
+//        @Override
+//        public void sortImpl(Comparable[] arr) {
+//            sort(arr, 0, arr.length);
+//        }
+//
+//        public void sort(Comparable[] arr, int startIdx, int endIdx) {
+//            int elements = endIdx - startIdx;
+//            if (elements < 3) {
+//                inplaceSort(arr, startIdx, endIdx);
+//            } else {
+//                int mid = startIdx + (elements / 2);
+//
+//            }
+//        }
+//
+//        public void inplaceSort(Comparable[] arr, int startIdx, int endIdx) {
+//
+//        }
+//
+//    }
+//
 }
