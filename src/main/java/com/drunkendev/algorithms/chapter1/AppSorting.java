@@ -20,6 +20,7 @@
 package com.drunkendev.algorithms.chapter1;
 
 import edu.princeton.cs.algs4.Stopwatch;
+import edu.princeton.cs.introcs.StdRandom;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -279,6 +280,7 @@ public class AppSorting {
 
         @Override
         public void sortImpl(Comparable[] arr) {
+            StdRandom.shuffle(arr);
             sort(arr, 0, arr.length - 1);
         }
 
@@ -287,7 +289,6 @@ public class AppSorting {
                 return;
             }
             int psize = partition(arr, startI, endI);
-//            int psize =
             sort(arr, startI, psize - 1);
             sort(arr, psize + 1, endI);
         }
@@ -305,9 +306,9 @@ public class AppSorting {
                 }
 
                 while (less(v, arr[--j])) {
-                    if (j == startI) {
-                        break;
-                    }
+//                    if (j == startI) {
+//                        break;
+//                    }
                 }
 
                 if (i >= j) {
